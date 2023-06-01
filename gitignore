@@ -1,0 +1,11 @@
+# File temporanei
+*.tmp
+
+# File di log
+*.log
+
+# Dipendenze Node.js
+/node_modules
+
+# File generati da IDE
+.vscode/
