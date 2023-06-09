@@ -1,17 +1,30 @@
+import dotenv from "dotenv";
+import {Mqtt} from "./protocols/mqtt/mqtt.js";
+
+dotenv.config();
+
+const istance = new Mqtt();
+istance.cb_message("/qzer2021pn/chat");
+
+//todo fix 
+/*
 const { SerialPort } = require("serialport"); //pacchetto globale
 const { ReadlineParser } = require("@serialport/parser-readline"); //sotto pacchetto
 //const { CustomError } = require("./CustomError"); // file locale per gestile le eccezioni TODO
-const s = require("./config/serial"); // file di configurazione locale 
+const s_serial = require("./settings/serial_set"); // file di configurazione locale 
+const setting = require("./settings/generic_set");
+const s_mqtt = require("./settings/mqtt_set");
+const readline = require("readline");
 
 //config serial connection
 const serial_port = new SerialPort({
-    path: "COM2",
-    baudRate: 9600,
-    autoOpen: false,
+    path: s_serial.path,
+    baudRate: s_serial.baudRate,
+    autoOpen: s_serial.autoOpen 
   });
 
 //parser serialport (used to parse data from serial)
-const parser = serial_port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
+const parser = serial_port.pipe(new ReadlineParser({ delimiter: s_serial.delimiter }));
 
 //connect to serial port
 serial_port.open((res) => {
@@ -42,3 +55,5 @@ function stream_to_obj(data) {
   let obj = { code: codice, pic: pic, timestamp: timestamp };
   return obj;
 }
+
+*/
