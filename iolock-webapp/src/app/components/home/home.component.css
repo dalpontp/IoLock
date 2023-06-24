@@ -1,0 +1,9 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.heading-3 {
+  font-size: 36px;
+  font-size: clamp(36px, 14.8732394366px + 4.2253521127vw, 96px);
+  line-height: normal;
+}

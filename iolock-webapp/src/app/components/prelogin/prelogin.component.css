@@ -1,0 +1,47 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.heading-3 {
+  font-size: 36px;
+  font-size: clamp(36px, 14.8732394366px + 4.2253521127vw, 96px);
+  line-height: normal;
+}
+
+
+.c-heading{
+  margin-top: 100px;
+  margin-bottom: 50px;
+}
+.text-center {
+  text-align: center;
+  color: rgba(34, 34, 34);
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+body {
+  margin: auto;
+  font-family: "apercu",sans-serif;
+  font-size: var(--text-size-primary);
+  font-weight: 300;
+  background: var(--bg-primary);
+  color: var(--color-primary);
+  line-height: 200%;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  height: 100vh; /* Imposta l'altezza dell'immagine a 100% dell'altezza della viewport */
+  width: 60%;
+}
