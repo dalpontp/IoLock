@@ -1,49 +1,30 @@
 <form class="pic-code-form">
-  <!-- <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="lock"></mat-icon> -->
-  <mat-form-field class="example-full-width">
-    <mat-label>Codice visualizzato</mat-label>
-    <input matInput #postalCode maxlength="5" placeholder="Ex. 94105" value="">
-    <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
-  </mat-form-field>
+
+  <div style="display: flex; align-items: center;">
+    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="pin" style="margin-bottom: 18px;"></mat-icon>
+    <h1 style="font-size: 22px; margin-left: 10px;">Inserisci il codice visualizzato sul dispositivo</h1>
+  </div>
+
+  <form #registerform="ngForm" (ngSubmit)="onSubmit(registerform)">
+    <mat-form-field appearance="fill" class="example-full-width">
+      <input matInput type="name" maxlength="5" placeholder="Ex. 94105" name='name' required ngModel>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!registerform.valid">Invia</button>
+  </form>
+
 </form>
 
 <form class="backend-code-form">
-  <mat-form-field class="example-full-width">
-    <mat-label>Codice da inserire</mat-label>
-    <input matInput disabled value="">
-  </mat-form-field>
+  <div style="display: flex; align-items: center;">
+    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="key" style="margin-bottom: 18px;"></mat-icon>
+    <h1 style="font-size: 22px; margin-left: 10px;">Inserisci il codice sul dispositivo per accedere</h1>
+  </div>
+
+  <mat-card class="example-full-width-card">    <container-element [ngSwitch]="accessPassword">
+      <mat-card-content *ngSwitchCase="-1">Password per accedere</mat-card-content>
+      <mat-card-content *ngSwitchCase="0">Non sei autorizzato ad accedere</mat-card-content>
+      <mat-card-content *ngSwitchDefault>{{accessPassword}}</mat-card-content>
+    </container-element>
+  </mat-card>
+
 </form>
-<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
-
-
-<!-- facilitates your accesses -->
-<!-- <h1>IoLock</h1>
-
-		<button mat-raised-button color="warn" *ngIf="isLogged" type="button" (click)="logout()">Logout</button>
-		<button mat-raised-button color="primary" *ngIf="!isLogged" type="button" (click)="login()">Login</button>
-
-		<ng-container *ngIf="userProfile">
-		  <h2>Informazioni dell'utente</h2>
-		  <table>
-		    <tr *ngIf="userProfile.username">
-		      <th scope="row">Utente</th>
-		      <td>{{ userProfile.username }}</td>
-		    </tr>
-		    <tr *ngIf="userProfile.firstName">
-		      <th scope="row">Nome</th>
-		      <td>{{ userProfile.firstName }}</td>
-		    </tr>
-		    <tr *ngIf="userProfile.lastName">
-		      <th scope="row">Cognome</th>
-		      <td>{{ userProfile.lastName }}</td>
-		    </tr>
-		    <tr *ngIf="userProfile.email">
-		      <th scope="row">Email</th>
-		      <td>{{ userProfile.email }}</td>
-		    </tr>
-		    <tr>
-		      <th scope="row">Email verified</th>
-		      <td>{{ userProfile.emailVerified ? 'Si' : 'No' }}</td>
-		    </tr>
-		  </table>
-		</ng-container> -->

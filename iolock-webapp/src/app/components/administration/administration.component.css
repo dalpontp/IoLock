@@ -1,0 +1,31 @@
+/* Structure */
+table {
+  width: 98%;
+  margin-left: 20px;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 98%;
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.mat-mdc-table .mdc-data-table__header-row {
+  background-color: rgba(34, 36, 38, 0.4);
+}
+
+.mat-mdc-table .mdc-data-table__row {
+  background-color: rgba(34, 36, 38, 0.1);
+}
+
+.mdc-data-table__table {
+  min-width: 98%;
+}
+
+.example-additional-selection {
+  opacity: 0.75;
+  font-size: 0.75em;
+}

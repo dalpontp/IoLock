@@ -15,13 +15,20 @@ import { UserCodeComponent } from './components/user-code/user-code.component';
 import { AdministrationComponent } from './components/administration/administration.component';
 import { PreloginComponent } from './components/prelogin/prelogin.component';
 import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { HttpClientModule } from '@angular/common/http';
 
 function inizializeKeycloak(keycloak: KeycloakService) {
   return () =>
     keycloak.init({
       config: {
-        url: 'http://localhost:8080',
+        url: 'https://iolock-keycloak.azurewebsites.net/auth/',
         realm: 'iolock',
         clientId : 'iolock'
       },
@@ -41,6 +48,7 @@ function inizializeKeycloak(keycloak: KeycloakService) {
     PreloginComponent
   ],
   imports: [
+    FormsModule,
     BrowserModule,
     AppRoutingModule,
     KeycloakAngularModule,
@@ -49,7 +57,13 @@ function inizializeKeycloak(keycloak: KeycloakService) {
     MatToolbarModule,
     BrowserAnimationsModule,
     MatInputModule,
-
+    MatFormFieldModule,
+    HttpClientModule,
+    MatCardModule,
+    MatTableModule,
+    MatTabsModule,
+    MatSelectModule,
+    ReactiveFormsModule
   ],
   providers: [{
     provide: APP_INITIALIZER,

@@ -14,7 +14,8 @@ const routes: Routes = [
     {path: '', redirectTo: 'prelogin', pathMatch: 'full'},
     {path: 'prelogin', component: PreloginComponent},
     {path: 'code', component: UserCodeComponent},
-    {path: 'administration', component: AdministrationComponent}
+    {path: 'users', component: AdministrationComponent},
+    {path: 'users/:email', component: AdministrationComponent },
   ]},
 ]
 
