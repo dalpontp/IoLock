@@ -14,11 +14,7 @@ table {
 }
 
 .mat-mdc-table .mdc-data-table__header-row {
-  background-color: rgba(34, 36, 38, 0.4);
-}
-
-.mat-mdc-table .mdc-data-table__row {
-  background-color: rgba(34, 36, 38, 0.1);
+  background-color: rgba(236, 236, 236);
 }
 
 .mdc-data-table__table {

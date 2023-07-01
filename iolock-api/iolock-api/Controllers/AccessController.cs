@@ -53,9 +53,9 @@ namespace iolock_api.Controllers
             var jwtEncodedString = accessRequest.Bearer;
 
             var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "preferred_username").Value;
+            string requestorEmail = token.Claims.First(c => c.Type == "email").Value;
 
-            var picPassword = _dataAccess.GetAccessPasswordAsync(requestorUsername, accessRequest.Code);
+            var picPassword = _dataAccess.GetAccessPasswordAsync(requestorEmail, accessRequest.Code);
 
             return picPassword;
         }

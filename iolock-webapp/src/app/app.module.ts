@@ -1,3 +1,5 @@
+import { environment } from 'src/environments/environment.development';
+
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -28,7 +30,7 @@ function inizializeKeycloak(keycloak: KeycloakService) {
   return () =>
     keycloak.init({
       config: {
-        url: 'https://iolock-keycloak.azurewebsites.net/auth/',
+        url: environment.keycloakUrl,
         realm: 'iolock',
         clientId : 'iolock'
       },

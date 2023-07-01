@@ -15,4 +15,8 @@ public interface IDataAccess
     Task<IEnumerable> GetBuildings();
     Task<IEnumerable> GetBuildingRooms(string building);
     Task<int> RevokeUserPermission(string email, string room, string building);
+    Task<int> GiveUserPermission(string email, string room, string building);
+    Task<IEnumerable<Log>> GetLogs();
+    Task<IEnumerable<Log>> GetUserLogs(string email);
+    Task<int> InsertUserLogs(string email, string room, string building);
 }

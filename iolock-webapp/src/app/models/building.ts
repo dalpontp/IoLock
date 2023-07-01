@@ -1,3 +1,3 @@
 export interface Building {
-  building: string,
+  building: string
 }

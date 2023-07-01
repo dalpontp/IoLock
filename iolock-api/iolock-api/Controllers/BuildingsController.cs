@@ -26,15 +26,16 @@ namespace iolock_api.Controllers
             var jwtEncodedString = bearer;
 
             var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "resource_access").Value;
+            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
 
             var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
 
-            var userRoles = jsonObject["iolock"]["roles"];
+            var userRoles = jsonObject["roles"];
+
             string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
 
 
-            if (jsonStringArray.Contains("admin"))
+            if (jsonStringArray.Contains("app-admin"))
             {
                 var buildings = await _dataAccess.GetBuildings();
                 return Ok(buildings);
@@ -50,15 +51,16 @@ namespace iolock_api.Controllers
             var jwtEncodedString = bearer;
 
             var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "resource_access").Value;
+            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
 
             var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
 
-            var userRoles = jsonObject["iolock"]["roles"];
+            var userRoles = jsonObject["roles"];
+
             string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
 
 
-            if (jsonStringArray.Contains("admin"))
+            if (jsonStringArray.Contains("app-admin"))
             {
                 var rooms = await _dataAccess.GetBuildingRooms(building);
                 return Ok(rooms);

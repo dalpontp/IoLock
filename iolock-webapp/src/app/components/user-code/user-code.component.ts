@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, isDevMode  } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { KeycloakService } from 'keycloak-angular';
@@ -11,7 +11,7 @@ import { AccessRequest } from 'src/app/models/access_request';
   templateUrl: './user-code.component.html',
   styleUrls: ['./user-code.component.css']
 })
-export class UserCodeComponent {
+export class UserCodeComponent implements OnInit {
   public isLogged: boolean = false;
   public userProfile: KeycloakProfile | null = null;
   public userToken: string = '';
@@ -44,6 +44,7 @@ export class UserCodeComponent {
     }
     this.accessService.getAccessPassword(accessRequest).subscribe((response: any) => {
       this.accessPassword = response == null ? 0 : response;
+
     });
   }
 }

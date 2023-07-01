@@ -27,16 +27,16 @@ namespace iolock_api.Controllers
             var jwtEncodedString = bearer;
 
             var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "resource_access").Value;
+            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
 
             var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
 
-            var userRoles = jsonObject["iolock"]["roles"];
+            var userRoles = jsonObject["roles"];
 
             string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
 
 
-            if (jsonStringArray.Contains("admin"))
+            if (jsonStringArray.Contains("app-admin"))
             {
                 var avaiableRooms = await _dataAccess.getUserAvailablesRoomsAsync(email);
 
@@ -53,19 +53,45 @@ namespace iolock_api.Controllers
             var jwtEncodedString = bearer;
 
             var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "resource_access").Value;
+            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
 
             var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
 
-            var userRoles = jsonObject["iolock"]["roles"];
+            var userRoles = jsonObject["roles"];
 
             string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
 
 
-            if (jsonStringArray.Contains("admin"))
+            if (jsonStringArray.Contains("app-admin"))
             {
                 var permissionRevoked = await _dataAccess.RevokeUserPermission(email, room, building);
                 if (permissionRevoked == 0) return NotFound();
+                return Ok(permissionRevoked);
+            }
+
+            return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("{room}/Building/{building}")]
+        public async Task<IActionResult> GiveUserPermission(string bearer, string email, string room, string building)
+        {
+            var jwtEncodedString = bearer;
+
+            var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
+            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
+
+            var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
+
+            var userRoles = jsonObject["roles"];
+
+            string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
+
+
+            if (jsonStringArray.Contains("app-admin"))
+            {
+                var permissionRevoked = await _dataAccess.GiveUserPermission(email, room, building);
+                if (permissionRevoked == 0) return BadRequest();
                 return Ok(permissionRevoked);
             }
 

@@ -12,6 +12,8 @@ import { BuildingsService } from 'src/app/services/buildings.service';
 import { Building } from 'src/app/models/building';
 import { Room } from 'src/app/models/room';
 import { AccessService } from 'src/app/services/access.service';
+import { Log } from 'src/app/models/log';
+import { LogsService } from 'src/app/services/logs.service';
 
 @Component({
   selector: 'app-administration',
@@ -19,13 +21,17 @@ import { AccessService } from 'src/app/services/access.service';
   styleUrls: ['./administration.component.css']
 })
 export class AdministrationComponent implements OnInit {
+  building: Building | undefined;
   selected: boolean = false
   public isLogged: boolean = false;
   public userToken: string = '';
   displayedUserColumns: string[] = ['givenName', 'familyName', 'email', 'preferredUsername', 'emailVerified'];
   displayedRoomsColumns: string[] = ['room', 'building', 'delete'];
+  displayedLogsColumns: string[] = ['userGivenName', 'userFamilyName', 'userEmail', 'room', 'building', 'accessDatetime'];
   users: MatTableDataSource<User> = new MatTableDataSource();
   rooms: MatTableDataSource<RoomBuilding> = new MatTableDataSource();
+  logs: MatTableDataSource<Log> = new MatTableDataSource();
+  userLogs: MatTableDataSource<Log> = new MatTableDataSource();
   buildings = new FormControl('');
 
   buildingsList: Building[] = [];
@@ -36,7 +42,8 @@ export class AdministrationComponent implements OnInit {
     private readonly keycloak: KeycloakService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
-    private accessService: AccessService
+    private accessService: AccessService,
+    private logsService: LogsService
   ) { }
 
   public async ngOnInit() {
@@ -54,18 +61,34 @@ export class AdministrationComponent implements OnInit {
           },
           error: err => console.error(err)
         })
+
+        this.logsService.getLogs(this.userToken).subscribe({
+          next: logs => {
+            this.logs = new MatTableDataSource(logs);
+          },
+          error: err => console.error(err)
+        });
       } else {
         this.buildingsService.getBuildings(this.userToken).subscribe({
           next: buildings => {
             this.buildingsList = buildings;
           }
         })
+
         this.userService.getUserAvailableRooms(this.userToken, this.activatedRoute.snapshot.paramMap.get('email')!).subscribe({
           next: rooms => {
             this.rooms = new MatTableDataSource(rooms);
           },
           error: err => console.error(err)
         })
+
+        this.logsService.getUserLogs(this.userToken, this.activatedRoute.snapshot.paramMap.get('email')!).subscribe({
+          next: userLogs => {
+            console.log(userLogs)
+            this.userLogs = new MatTableDataSource(userLogs);
+          },
+          error: err => console.error(err)
+        });
       }
     } else {
       this.route.navigate([`/prelogin`]);
@@ -81,17 +104,26 @@ export class AdministrationComponent implements OnInit {
     this.users.filter = filterValue.trim().toLowerCase();
   }
 
+  applyFilterOnLogs(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.logs.filter = filterValue.trim().toLowerCase();
+  }
+
+  applyFilterOnUserLogs(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.userLogs.filter = filterValue.trim().toLowerCase();
+  }
+
   buildingSelected(building: Building) {
+    this.building = building;
     this.buildingsService.getBuildingRooms(this.userToken, building).subscribe({
       next: rooms => {
         this.roomsList = rooms;
       }
     })
-    this.ngOnInit();
   }
 
   deletePermission(element: RoomBuilding) {
-    console.log(element)
     this.accessService.revokeAccessPermission(this.userToken, element.room, element.building, this.activatedRoute.snapshot.paramMap.get('email')!)
     .subscribe({
       next: res => {
@@ -106,8 +138,18 @@ export class AdministrationComponent implements OnInit {
     })
     // this.route.navigate([`/users`], );
   }
-
-  savePermission() {
-    // console.log('devo salvare nel db')
+  roomSelected (room: Room) {
+    console.log(this.building?.building)
+    console.log(room.room)
+    if(this.building?.building != null || this.building?.building != undefined) {
+      this.accessService.giveAccessPermission(this.userToken, room.room.trim(), this.building!.building.trim(), this.activatedRoute.snapshot.paramMap.get('email')!)
+      .subscribe({
+        next: res => {
+          console.log(res)
+        }
+      });
+    }
+    this.route.navigate([`/users`]);
   }
+
 }

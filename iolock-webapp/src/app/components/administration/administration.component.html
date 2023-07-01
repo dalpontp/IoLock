@@ -1,43 +1,87 @@
 <div *ngIf="!selected; else userProfile">
-  <mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="" #input>
-  </mat-form-field>
+  <mat-tab-group>
+    <mat-tab label="Users">
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="" #input>
+      </mat-form-field>
 
-  <table mat-table [dataSource]="users" class="mat-elevation-z8">
+      <table mat-table [dataSource]="users" class="mat-elevation-z8">
 
-    <div class="flex-container">
-      <p style="text-transform: uppercase; margin-top: 20px; margin-left: 0px; font-size: larger;">Utenti</p>
-    </div>
+        <ng-container matColumnDef="givenName">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.givenName}} </td>
+        </ng-container>
 
-    <ng-container matColumnDef="givenName">
-      <th mat-header-cell *matHeaderCellDef> Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.givenName}} </td>
-    </ng-container>
+        <ng-container matColumnDef="familyName">
+          <th mat-header-cell *matHeaderCellDef> Surname </th>
+          <td mat-cell *matCellDef="let element"> {{element.familyName}} </td>
+        </ng-container>
 
-    <ng-container matColumnDef="familyName">
-      <th mat-header-cell *matHeaderCellDef> Surname </th>
-      <td mat-cell *matCellDef="let element"> {{element.familyName}} </td>
-    </ng-container>
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+        </ng-container>
 
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef> Email </th>
-      <td mat-cell *matCellDef="let element"> {{element.email}} </td>
-    </ng-container>
+        <ng-container matColumnDef="preferredUsername">
+          <th mat-header-cell *matHeaderCellDef> Username </th>
+          <td mat-cell *matCellDef="let element"> {{element.preferredUsername}} </td>
+        </ng-container>
 
-    <ng-container matColumnDef="preferredUsername">
-      <th mat-header-cell *matHeaderCellDef> Username </th>
-      <td mat-cell *matCellDef="let element"> {{element.preferredUsername}} </td>
-    </ng-container>
+        <ng-container matColumnDef="emailVerified">
+          <th mat-header-cell *matHeaderCellDef> Email verified </th>
+          <td mat-cell *matCellDef="let element"> {{element.emailVerified}} </td>
+        </ng-container>
 
-    <ng-container matColumnDef="emailVerified">
-      <th mat-header-cell *matHeaderCellDef> Email verified </th>
-      <td mat-cell *matCellDef="let element"> {{element.emailVerified}} </td>
-    </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedUserColumns"></tr>
+        <tr mat-row *matRowDef="let row; let element; columns: displayedUserColumns;" routerLink="/users/{{element.email}}"></tr>
+      </table>
+    </mat-tab>
 
-    <tr mat-header-row *matHeaderRowDef="displayedUserColumns"></tr>
-    <tr mat-row *matRowDef="let row; let element; columns: displayedUserColumns;" routerLink="/users/{{element.email}}"></tr>
-  </table>
+    <mat-tab label="Logs">
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilterOnLogs($event)" placeholder="" #input>
+      </mat-form-field>
+
+      <table mat-table [dataSource]="logs" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="userGivenName">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.userGivenName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="userFamilyName">
+          <th mat-header-cell *matHeaderCellDef> Surname </th>
+          <td mat-cell *matCellDef="let element"> {{element.userFamilyName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="userEmail">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let element"> {{element.userEmail}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="room">
+          <th mat-header-cell *matHeaderCellDef> Room </th>
+          <td mat-cell *matCellDef="let element"> {{element.room}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="building">
+          <th mat-header-cell *matHeaderCellDef> Building </th>
+          <td mat-cell *matCellDef="let element"> {{element.building}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accessDatetime">
+          <th mat-header-cell *matHeaderCellDef> Access Time </th>
+          <td mat-cell *matCellDef="let element"> {{element.accessDatetime}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedLogsColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedLogsColumns;"></tr>
+      </table>
+    </mat-tab>
+  </mat-tab-group>
+
 </div>
 
 
@@ -70,7 +114,6 @@
       </table>
 
     </mat-tab>
-
     <mat-tab label="Update">
       <mat-form-field>
         <mat-label>Building</mat-label>
@@ -82,9 +125,52 @@
       <mat-form-field>
         <mat-label>Rooms</mat-label>
         <mat-select>
-          <mat-option *ngFor="let room of roomsList;" (onSelectionChange)="savePermission()" value="building">{{room.room}}</mat-option>
+          <mat-option *ngFor="let room of roomsList;" (click)="roomSelected(room)" value="building">{{room.room}}</mat-option>
         </mat-select>
       </mat-form-field>
+    </mat-tab>
+
+    <mat-tab label="Logs">
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilterOnUserLogs($event)" placeholder="" #input>
+      </mat-form-field>
+
+      <table mat-table [dataSource]="userLogs" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="userGivenName">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.userGivenName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="userFamilyName">
+          <th mat-header-cell *matHeaderCellDef> Surname </th>
+          <td mat-cell *matCellDef="let element"> {{element.userFamilyName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="userEmail">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let element"> {{element.userEmail}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="room">
+          <th mat-header-cell *matHeaderCellDef> Room </th>
+          <td mat-cell *matCellDef="let element"> {{element.room}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="building">
+          <th mat-header-cell *matHeaderCellDef> Building </th>
+          <td mat-cell *matCellDef="let element"> {{element.building}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accessDatetime">
+          <th mat-header-cell *matHeaderCellDef> Access Time </th>
+          <td mat-cell *matCellDef="let element"> {{element.accessDatetime}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedLogsColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedLogsColumns;"></tr>
+      </table>
     </mat-tab>
   </mat-tab-group>
 </ng-template>
