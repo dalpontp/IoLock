@@ -32,12 +32,14 @@ function inizializeKeycloak(keycloak: KeycloakService) {
       config: {
         url: environment.keycloakUrl,
         realm: 'iolock',
-        clientId : 'iolock'
+        clientId : 'iolock-angular'
       },
       initOptions: {
         onLoad: 'check-sso',
         silentCheckSsoRedirectUri: window.location.origin + '/assets/verify-sso.html'
-      }
+      },
+      enableBearerInterceptor: true,
+      bearerPrefix: 'Bearer',
     });
 }
 

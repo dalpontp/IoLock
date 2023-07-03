@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Building } from '../models/building';
 import { Room } from '../models/room';
 import { Log } from '../models/log';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -12,15 +13,15 @@ export class LogsService {
 
   constructor(private http: HttpClient) { }
 
-  getLogs(bearer: string) : Observable<Log[]> {
-    return this.http.get<Log[]>('https://localhost:7117/api/Logs?bearer=' + bearer);
+  getLogs() : Observable<Log[]> {
+    return this.http.get<Log[]>('https://localhost:7117/api/Logs?bearer=');
   }
 
-  getUserLogs(bearer: string, email: string) : Observable<Log[]> {
-    return this.http.get<Log[]>(`https://localhost:7117/api/Logs/Users/${email}?bearer=${bearer}`);
+  getUserLogs(email: string) : Observable<Log[]> {
+    return this.http.get<Log[]>(`https://localhost:7117/api/Logs/Users/${email}`);
   }
 
-  addUserLog(bearer: string, email: string, room: Room, building: Building) : Observable<number> {
-    return this.http.post<number>(`https://localhost:7117/api/Logs/Users${email}?bearer=${bearer}&room=${room.room}&building=${building.building}`, null);
+  addUserLog(email: string, room: Room, building: Building) : Observable<number> {
+    return this.http.post<number>(`https://localhost:7117/api/Logs/Users${email}?&room=${room.room}&building=${building.building}`, null);
   }
 }

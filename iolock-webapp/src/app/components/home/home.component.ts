@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
@@ -13,7 +14,7 @@ export class HomeComponent implements OnInit {
   public userProfile: KeycloakProfile | null = null;
   public userRoles: string[] = [];
 
-  constructor(private readonly keycloak: KeycloakService, private route: Router) { }
+  constructor(private http: HttpClient, private readonly keycloak: KeycloakService, private route: Router) { }
 
   public async ngOnInit() {
     this.isLogged = await this.keycloak.isLoggedIn();
@@ -23,9 +24,9 @@ export class HomeComponent implements OnInit {
 
     if(this.isLogged) {
       this.userProfile = await this.keycloak.loadUserProfile();
+      console.log(this.userRoles)
       this.userRoles.includes('app-admin') ? this.route.navigate([`/users`]) : this.route.navigate([`/code`]);
     } else {
-      console.log('is not logged')
       this.route.navigate([`/prelogin`]);
     }
   }

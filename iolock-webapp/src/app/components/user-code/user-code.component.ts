@@ -40,7 +40,7 @@ export class UserCodeComponent implements OnInit {
     // this.keycloak.getToken().then(value => this.userToken = value);
     const accessRequest : AccessRequest = {
       code: form.value.name,
-      bearer: this.userToken
+      email: this.userProfile!.email!
     }
     this.accessService.getAccessPassword(accessRequest).subscribe((response: any) => {
       this.accessPassword = response == null ? 0 : response;

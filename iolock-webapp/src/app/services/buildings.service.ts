@@ -11,11 +11,11 @@ export class BuildingsService {
 
   constructor(private http: HttpClient) { }
 
-  getBuildings(bearer: string) : Observable<Building[]> {
-    return this.http.get<Building[]>('https://localhost:7117/api/Buildings?bearer=' + bearer);
+  getBuildings() : Observable<Building[]> {
+    return this.http.get<Building[]>('https://localhost:7117/api/Buildings?bearer=');
   }
 
-  getBuildingRooms(bearer: string, building: Building) : Observable<Room[]> {
-    return this.http.get<Room[]>(`https://localhost:7117/api/Buildings/${building.building}/Rooms?bearer=${bearer}`);
+  getBuildingRooms(building: Building) : Observable<Room[]> {
+    return this.http.get<Room[]>(`https://localhost:7117/api/Buildings/${building.building}/Rooms`);
   }
 }

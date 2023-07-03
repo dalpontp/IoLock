@@ -52,37 +52,37 @@ export class AdministrationComponent implements OnInit {
 
     if(this.isLogged) {
       this.userToken = await this.keycloak.getToken();
-      this.userService.getUsers(this.userToken);
+      this.userService.getUsers();
 
       if(!this.selected) {
-        this.userService.getUsers(this.userToken).subscribe({
+        this.userService.getUsers().subscribe({
           next: users => {
             this.users = new MatTableDataSource(users);
           },
           error: err => console.error(err)
         })
 
-        this.logsService.getLogs(this.userToken).subscribe({
+        this.logsService.getLogs().subscribe({
           next: logs => {
             this.logs = new MatTableDataSource(logs);
           },
           error: err => console.error(err)
         });
       } else {
-        this.buildingsService.getBuildings(this.userToken).subscribe({
+        this.buildingsService.getBuildings().subscribe({
           next: buildings => {
             this.buildingsList = buildings;
           }
         })
 
-        this.userService.getUserAvailableRooms(this.userToken, this.activatedRoute.snapshot.paramMap.get('email')!).subscribe({
+        this.userService.getUserAvailableRooms(this.activatedRoute.snapshot.paramMap.get('email')!).subscribe({
           next: rooms => {
             this.rooms = new MatTableDataSource(rooms);
           },
           error: err => console.error(err)
         })
 
-        this.logsService.getUserLogs(this.userToken, this.activatedRoute.snapshot.paramMap.get('email')!).subscribe({
+        this.logsService.getUserLogs(this.activatedRoute.snapshot.paramMap.get('email')!).subscribe({
           next: userLogs => {
             console.log(userLogs)
             this.userLogs = new MatTableDataSource(userLogs);
@@ -116,7 +116,7 @@ export class AdministrationComponent implements OnInit {
 
   buildingSelected(building: Building) {
     this.building = building;
-    this.buildingsService.getBuildingRooms(this.userToken, building).subscribe({
+    this.buildingsService.getBuildingRooms(building).subscribe({
       next: rooms => {
         this.roomsList = rooms;
       }
@@ -124,7 +124,7 @@ export class AdministrationComponent implements OnInit {
   }
 
   deletePermission(element: RoomBuilding) {
-    this.accessService.revokeAccessPermission(this.userToken, element.room, element.building, this.activatedRoute.snapshot.paramMap.get('email')!)
+    this.accessService.revokeAccessPermission(element.room, element.building, this.activatedRoute.snapshot.paramMap.get('email')!)
     .subscribe({
       next: res => {
         if (res){
@@ -136,16 +136,13 @@ export class AdministrationComponent implements OnInit {
         console.log(res)
       }
     })
-    // this.route.navigate([`/users`], );
   }
   roomSelected (room: Room) {
-    console.log(this.building?.building)
-    console.log(room.room)
     if(this.building?.building != null || this.building?.building != undefined) {
-      this.accessService.giveAccessPermission(this.userToken, room.room.trim(), this.building!.building.trim(), this.activatedRoute.snapshot.paramMap.get('email')!)
+      this.accessService.giveAccessPermission(room.room.trim(), this.building!.building.trim(), this.activatedRoute.snapshot.paramMap.get('email')!)
       .subscribe({
         next: res => {
-          console.log(res)
+          this.route.navigate([`/users/${this.activatedRoute.snapshot.paramMap.get('email')!}`]);
         }
       });
     }

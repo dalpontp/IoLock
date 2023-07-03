@@ -11,14 +11,14 @@ export class UsersService {
 
   constructor(private http: HttpClient) { }
 
-  getUsers(bearer: string) : Observable<User[]> {
-    return this.http.get<User[]>('https://localhost:7117/api/User?bearer=' + bearer);
+  getUsers() : Observable<User[]> {
+    return this.http.get<User[]>('https://localhost:7117/api/Users');
   }
 
-  getUsersByEmail(bearer: string, email: string) : Observable<User[]> {
-    return this.http.get<User[]>(`https://localhost:7117/api/User/${email}?bearer=${bearer}`);
+  getUsersByEmail(email: string) : Observable<User[]> {
+    return this.http.get<User[]>(`https://localhost:7117/api/Users/${email}`);
   }
-  getUserAvailableRooms(bearer: string, email: string) : Observable<RoomBuilding[]> {
-    return this.http.get<RoomBuilding[]>(`https://localhost:7117/api/Rooms/${email}?bearer=${bearer}`);
+  getUserAvailableRooms(email: string) : Observable<RoomBuilding[]> {
+    return this.http.get<RoomBuilding[]>(`https://localhost:7117/api/Users/${email}/Rooms`);
   }
 }

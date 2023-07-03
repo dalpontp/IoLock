@@ -15,16 +15,11 @@ export class AccessService {
     return this.http.post<AccessPassword>('https://localhost:7117/api/Access', accessRequest);
   }
 
-  revokeAccessPermission(bearer: string, room: string, building: string, email: string) : Observable<number>{
-    return this.http.delete<number>(`https://localhost:7117/api/Rooms/${room}/Building/${building}?bearer=${bearer}&email=${email}`);
+  revokeAccessPermission(room: string, building: string, email: string) : Observable<number>{
+    return this.http.delete<number>(`https://localhost:7117/api/Users/${email}/Rooms/${room}/Building/${building}`);
   }
 
-  giveAccessPermission(bearer: string, room: string, building: string, email: string) : Observable<number>{
-    console.log(bearer);
-    console.log(room);
-    console.log(building);
-    console.log(email);
-
-    return this.http.post<number>(`https://localhost:7117/api/Rooms/${room}/Building/${building}?bearer=${bearer}&email=${email}`, null);
+  giveAccessPermission(room: string, building: string, email: string) : Observable<number>{
+    return this.http.post<number>(`https://localhost:7117/api/Users/${email}/Rooms/${room}/Building/${building}`, null);
   }
 }
