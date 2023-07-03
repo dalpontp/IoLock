@@ -7,11 +7,11 @@ namespace iolock_api.Models;
 public interface IDataAccess
 {
     Task<string> GetAccessPasswordAsync(string preferredUsername, int picCode);
-    Task<IEnumerable<UserEntity>> GetUsersAsync();
-    Task<IEnumerable<RoomBuildingEntity>> getUserAvailablesRoomsAsync(string email);
-    Task<UserEntity> GetUserByEmailAsync(string Email);
-    Task<int> CreateUserAsync(UserEntity user);
-    Task<int> UpdateUserAsync(UserEntity user);
+    Task<IEnumerable<User>> GetUsersAsync();
+    Task<IEnumerable<RoomBuilding>> GetUserAvailablesRoomsAsync(string email);
+    Task<User> GetUserByEmailAsync(string Email);
+    Task<int> CreateUserAsync(User user);
+    Task<int> UpdateUserAsync(Dictionary<string, object> diffs, string email);
     Task<IEnumerable> GetBuildings();
     Task<IEnumerable> GetBuildingRooms(string building);
     Task<int> RevokeUserPermission(string email, string room, string building);

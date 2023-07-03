@@ -3,6 +3,6 @@
     public class AccessRequest
     {
         public int Code { get; set; }
-        public string Bearer { get; set; }
+        public string Email { get; set; }
     }
 }

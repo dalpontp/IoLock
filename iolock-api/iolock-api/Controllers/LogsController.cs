@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
+using iolock_api.Services;
 
 namespace iolock_api.Controllers
 {
@@ -19,79 +20,31 @@ namespace iolock_api.Controllers
             _dataAccess = dataAccess;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "app-user")]
         [HttpGet]
-        public async Task<IActionResult> GetLogs(string bearer)
+        public async Task<IActionResult> GetLogs()
         {
-            var jwtEncodedString = bearer;
+            var result = await _dataAccess.GetLogs();
 
-            var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
-
-            var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
-
-            var userRoles = jsonObject["roles"];
-
-            string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
-
-
-            if (jsonStringArray.Contains("app-admin"))
-            {
-                var buildings = await _dataAccess.GetLogs();
-                return Ok(buildings);
-            }
-
-            return BadRequest();
+            return result != null ? Ok(result) : BadRequest();
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "app-user")]
         [HttpGet("Users/{Email}")]
-        public async Task<IActionResult> GetUserLogs(string bearer, string email)
+        public async Task<IActionResult> GetUserLogs(string email)
         {
-            var jwtEncodedString = bearer;
+            var result = await _dataAccess.GetUserLogs(email);
 
-            var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
-
-            var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
-
-            var userRoles = jsonObject["roles"];
-
-            string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
-
-
-            if (jsonStringArray.Contains("app-admin"))
-            {
-                var buildings = await _dataAccess.GetUserLogs(email);
-                return Ok(buildings);
-            }
-
-            return BadRequest();
+            return result != null ? Ok(result) : BadRequest();
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "app-user")]
         [HttpPost("Users/{Email}")]
-        public async Task<IActionResult> PostUserLog(string bearer, string email, string room, string building)
+        public async Task<IActionResult> PostUserLog(string email, string room, string building)
         {
-            var jwtEncodedString = bearer;
+            var result = await _dataAccess.InsertUserLogs(email, room, building);
 
-            var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
-
-            var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
-
-            var userRoles = jsonObject["roles"];
-
-            string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
-
-
-            if (jsonStringArray.Contains("app-admin"))
-            {
-                var buildings = await _dataAccess.InsertUserLogs(email, room, building);
-                return Ok(buildings);
-            }
-
-            return BadRequest();
+            return result != null ? Ok(result) : BadRequest();
         }
     }
 }

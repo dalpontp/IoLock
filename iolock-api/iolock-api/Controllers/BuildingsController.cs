@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
+using iolock_api.Services;
 
 namespace iolock_api.Controllers
 {
@@ -19,54 +20,22 @@ namespace iolock_api.Controllers
             _dataAccess = dataAccess;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "app-user")]
         [HttpGet]
-        public async Task<IActionResult> getBuildings(string bearer)
+        public async Task<IActionResult> GetBuildings()
         {
-            var jwtEncodedString = bearer;
+            var result = await _dataAccess.GetBuildings();
 
-            var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
-
-            var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
-
-            var userRoles = jsonObject["roles"];
-
-            string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
-
-
-            if (jsonStringArray.Contains("app-admin"))
-            {
-                var buildings = await _dataAccess.GetBuildings();
-                return Ok(buildings);
-            }
-
-            return BadRequest();
+            return result != null ? Ok(result) : BadRequest();
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "app-user")]
         [HttpGet("{Building}/Rooms")]
-        public async Task<IActionResult> getBuildingRooms(string bearer, string building)
+        public async Task<IActionResult> GetBuildingRooms(string building)
         {
-            var jwtEncodedString = bearer;
+            var result = await _dataAccess.GetBuildingRooms(building);
 
-            var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorUsername = token.Claims.First(c => c.Type == "realm_access").Value;
-
-            var jsonObject = JsonConvert.DeserializeObject<JObject>(requestorUsername);
-
-            var userRoles = jsonObject["roles"];
-
-            string[] jsonStringArray = userRoles.Select(j => j.ToString()).ToArray();
-
-
-            if (jsonStringArray.Contains("app-admin"))
-            {
-                var rooms = await _dataAccess.GetBuildingRooms(building);
-                return Ok(rooms);
-            }
-
-            return BadRequest();
+            return result != null ? Ok(result) : BadRequest();
         }
     }
 }

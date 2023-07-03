@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.IdentityModel.Tokens;
+using iolock_api.Services;
 
 namespace iolock_api.Controllers
 {
@@ -18,7 +19,7 @@ namespace iolock_api.Controllers
             _dataAccess = dataAccess;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "app-user")]
         [HttpGet]
         public async void Get(string bearer)
         {
@@ -31,7 +32,7 @@ namespace iolock_api.Controllers
 
             if (requestorIsRegistered == null)
             {
-                var userRequestor = new UserEntity { 
+                var userRequestor = new User { 
                     GivenName = token.Claims.First(c => c.Type == "given_name").Value,
                     FamilyName = token.Claims.First(c => c.Type == "family_name").Value,
                     Email = token.Claims.First(c => c.Type == "email").Value,
@@ -42,22 +43,19 @@ namespace iolock_api.Controllers
                 await _dataAccess.CreateUserAsync(userRequestor);
             }
             // dovrei controllare se l'utente è stato modificato e in caso modificarlo anche sul db
-            
+            UserService.Update(requestorIsRegistered, _dataAccess);
             //return requestorUsername;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "app-user")]
         [HttpPost]
-        public Task<string> Post(AccessRequest accessRequest)
+        public async Task<IActionResult> Post(AccessRequest accessRequest)
         {
-            var jwtEncodedString = accessRequest.Bearer;
+            //UserService.Update(accessRequest.Email, _dataAccess);
 
-            var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
-            string requestorEmail = token.Claims.First(c => c.Type == "email").Value;
+            var result = await _dataAccess.GetAccessPasswordAsync(accessRequest.Email, accessRequest.Code);
 
-            var picPassword = _dataAccess.GetAccessPasswordAsync(requestorEmail, accessRequest.Code);
-
-            return picPassword;
+            return result != null ? Ok(result) : BadRequest();
         }
     }
 }

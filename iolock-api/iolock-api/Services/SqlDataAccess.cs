@@ -38,16 +38,16 @@ public class SqlDataAccess : IDataAccess
         return null;        
     }
 
-    public async Task<IEnumerable<UserEntity>> GetUsersAsync()
+    public async Task<IEnumerable<User>> GetUsersAsync()
     {
         const string query = """
             SELECT givenName, familyName, email, preferredUsername, emailVerified FROM Users;
             """;
         using var connection = new SqlConnection(_connectionString);
 
-        return await connection.QueryAsync<UserEntity>(query);
+        return await connection.QueryAsync<User>(query);
     }
-    public async Task<IEnumerable<RoomBuildingEntity>> getUserAvailablesRoomsAsync(string email)
+    public async Task<IEnumerable<RoomBuilding>> GetUserAvailablesRoomsAsync(string email)
     {
         const string query = """
             SELECT room, building FROM "Permissions" as p
@@ -57,20 +57,20 @@ public class SqlDataAccess : IDataAccess
             """;
         using var connection = new SqlConnection(_connectionString);
 
-        return await connection.QueryAsync<RoomBuildingEntity>(query, new { email });
+        return await connection.QueryAsync<RoomBuilding>(query, new { email });
     }
 
-    public async Task<UserEntity> GetUserByEmailAsync(string Email)
+    public async Task<User> GetUserByEmailAsync(string Email)
     {
         const string query = """
             SELECT givenName, familyName, email, preferredUsername, emailVerified FROM Users WHERE email = @Email;
             """;
         using var connection = new SqlConnection(_connectionString);
 
-        return await connection.QueryFirstOrDefaultAsync<UserEntity>(query, new { Email });
+        return await connection.QueryFirstOrDefaultAsync<User>(query, new { Email });
     }
 
-    public async Task<int> CreateUserAsync(UserEntity user)
+    public async Task<int> CreateUserAsync(User user)
     {
         const string query = """
             INSERT INTO Users (givenName, familyName, email, preferredUsername, emailVerified)
@@ -82,21 +82,23 @@ public class SqlDataAccess : IDataAccess
         return await connection.ExecuteAsync(query, user);
     }
 
-    public async Task<int> UpdateUserAsync(UserEntity user)
+    public async Task<int> UpdateUserAsync(Dictionary<string, object> diffs, string email)
     {
+        string joinedDiffs = "";
+        foreach (var diff in diffs)
+        {
+            joinedDiffs += diff.Key + " = " + diff.Value;
+        }
+
         const string query = """
-            UPDATE Users SET 
-            givenName = @GivenName,
-            familyName = @FamilyName,
-            email = @Email,
-            preferredUsername = @PreferredUsername,
-            emailVerified = @EmailVerified
+            UPDATE Users SET
+            @joinedDiffs
             OUTPUT Inserted.ID
-            WHERE id = @Id;
+            WHERE email = @Email;
             """;
         using var connection = new SqlConnection(_connectionString);
 
-        return await connection.ExecuteAsync(query, new { user });
+        return await connection.ExecuteAsync(query, new { joinedDiffs, email });
     }
 
     public async Task<IEnumerable> GetBuildings()
@@ -171,7 +173,8 @@ public class SqlDataAccess : IDataAccess
             r.room, r.building,
             l."accessDatetime" FROM Logs as l
             JOIN "Users" as u ON (u.id = l."userId")
-            JOIN "Rooms" as r ON (r.id = l."roomId");
+            JOIN "Rooms" as r ON (r.id = l."roomId")
+            ORDER BY "accessDatetime" DESC;
             """;
         using var connection = new SqlConnection(_connectionString);
 
@@ -188,7 +191,8 @@ public class SqlDataAccess : IDataAccess
             l."accessDatetime" FROM Logs as l
             JOIN "Users" as u ON (u.id = l."userId")
             JOIN "Rooms" as r ON (r.id = l."roomId")
-            WHERE u.email = @email;
+            WHERE u.email = @email
+            ORDER BY "accessDatetime" DESC;
             """;
         using var connection = new SqlConnection(_connectionString);
 
