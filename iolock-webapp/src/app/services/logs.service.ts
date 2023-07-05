@@ -14,14 +14,14 @@ export class LogsService {
   constructor(private http: HttpClient) { }
 
   getLogs() : Observable<Log[]> {
-    return this.http.get<Log[]>('https://localhost:7117/api/Logs?bearer=');
+    return this.http.get<Log[]>(`${environment.apiUrl}/Logs?bearer=`);
   }
 
   getUserLogs(email: string) : Observable<Log[]> {
-    return this.http.get<Log[]>(`https://localhost:7117/api/Logs/Users/${email}`);
+    return this.http.get<Log[]>(`${environment.apiUrl}/Logs/Users/${email}`);
   }
 
   addUserLog(email: string, room: Room, building: Building) : Observable<number> {
-    return this.http.post<number>(`https://localhost:7117/api/Logs/Users${email}?&room=${room.room}&building=${building.building}`, null);
+    return this.http.post<number>(`${environment.apiUrl}/Logs/Users${email}?&room=${room.room}&building=${building.building}`, null);
   }
 }
