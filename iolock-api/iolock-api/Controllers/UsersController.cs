@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace iolock_api.Controllers
 {
@@ -24,6 +25,8 @@ namespace iolock_api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
+            var username = User.Identity.Name;
+            var email = User.FindFirstValue(ClaimTypes.Email);
             var result = await _dataAccess.GetUsersAsync();
 
             return result != null ? Ok(result) : BadRequest();

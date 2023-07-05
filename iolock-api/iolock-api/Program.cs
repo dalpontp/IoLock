@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using iolock_api.Models;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,18 +47,22 @@ builder.Services.AddScoped<IDataAccess, SqlDataAccess>();
 
 builder.Services.AddAuthentication(options =>
 {
-    //options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    //options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    //options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(o =>
 {
+    o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        NameClaimType = "preferred_username",
+    };
     o.Authority = builder.Configuration["Jwt:Authority"];
     o.Audience = builder.Configuration["Jwt:Audience"];
     o.RequireHttpsMetadata = false;
     o.Events = new JwtBearerEvents()
     {
+        //OnTokenValidated = c => {
+
+        //},
         OnAuthenticationFailed = c =>
         {
             c.NoResult();
@@ -101,6 +106,17 @@ app.UseCors(x =>
       .AllowAnyMethod()
       .AllowAnyOrigin()
 );
+
+//app.UseStaticFiles();
+
+//if (Directory.Exists(Path.GetFullPath("wwwroot/iolock-webapp")))
+
+//    app.UseFileServer(new FileServerOptions
+//    {
+//        FileProvider = new PhysicalFileProvider(Path.GetFullPath("wwwroot/iolock-webapp")),
+//        RequestPath = "",
+//        EnableDirectoryBrowsing = app.Environment.IsDevelopment()
+//    });
 
 
 app.UseAuthentication();
