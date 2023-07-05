@@ -54,6 +54,7 @@ builder.Services.AddAuthentication(options =>
     o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         NameClaimType = "preferred_username",
+        //EmailVerifiedClaimType = "email_verified",
     };
     o.Authority = builder.Configuration["Jwt:Authority"];
     o.Audience = builder.Configuration["Jwt:Audience"];

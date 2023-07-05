@@ -10,7 +10,7 @@ public interface IDataAccess
     Task<IEnumerable<User>> GetUsersAsync();
     Task<IEnumerable<RoomBuilding>> GetUserAvailablesRoomsAsync(string email);
     Task<User> GetUserByEmailAsync(string Email);
-    Task<int> CreateUserAsync(User user);
+    Task<int> InsertUserAsync(User user);
     Task<int> UpdateUserAsync(Dictionary<string, object> diffs, string email);
     Task<IEnumerable> GetBuildings();
     Task<IEnumerable> GetBuildingRooms(string building);

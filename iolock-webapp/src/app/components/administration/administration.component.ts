@@ -52,7 +52,8 @@ export class AdministrationComponent implements OnInit {
 
     if(this.isLogged) {
       this.userToken = await this.keycloak.getToken();
-      this.userService.getUsers();
+      this.userService.NewUserCheck().subscribe();
+      // this.userService.getUsers();
 
       if(!this.selected) {
         this.userService.getUsers().subscribe({

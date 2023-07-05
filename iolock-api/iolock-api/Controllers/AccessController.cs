@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.IdentityModel.Tokens;
 using iolock_api.Services;
+using System.Security.Claims;
 
 namespace iolock_api.Controllers
 {
@@ -40,7 +41,7 @@ namespace iolock_api.Controllers
                     EmailVerified = Convert.ToBoolean(token.Claims.First(c => c.Type == "email_verified").Value)
                 };
                 
-                await _dataAccess.CreateUserAsync(userRequestor);
+                await _dataAccess.InsertUserAsync(userRequestor);
             }
             // dovrei controllare se l'utente è stato modificato e in caso modificarlo anche sul db
             UserService.Update(requestorIsRegistered, _dataAccess);
@@ -51,7 +52,26 @@ namespace iolock_api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(AccessRequest accessRequest)
         {
-            //UserService.Update(accessRequest.Email, _dataAccess);
+            var user = User.Identity;
+            var username = User.Identity.Name;
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            if (userEmail != null) {
+                var webappUser = await _dataAccess.GetUserByEmailAsync(userEmail);
+                if (webappUser == null)
+                {
+                    var newUser = new Models.User
+                    {
+                        GivenName = User.FindFirstValue(ClaimTypes.GivenName),
+                        FamilyName = User.FindFirstValue(ClaimTypes.Surname),
+                        Email = userEmail,
+                        EmailVerified = Convert.ToBoolean(User.FindFirstValue("email_verified")),
+                        PreferredUsername = username
+                    };
+                    await _dataAccess.InsertUserAsync(newUser);
+                }
+            }
 
             var result = await _dataAccess.GetAccessPasswordAsync(accessRequest.Email, accessRequest.Code);
 

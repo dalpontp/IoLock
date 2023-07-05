@@ -5,6 +5,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
 import { AccessService } from 'src/app/services/access.service';
 import { AccessRequest } from 'src/app/models/access_request';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-user-code',
@@ -17,16 +18,15 @@ export class UserCodeComponent implements OnInit {
   public userToken: string = '';
   public accessPassword: number = -1;
 
-  constructor(private accessService: AccessService, private readonly keycloak: KeycloakService, private route: Router) { }
+  constructor(private userService : UsersService, private accessService: AccessService, private readonly keycloak: KeycloakService, private route: Router) { }
 
   public async ngOnInit() {
     this.isLogged = await this.keycloak.isLoggedIn();
 
-    type userRoles = Array<{id: number, text: string}>;
-
     if(this.isLogged) {
       this.userProfile = await this.keycloak.loadUserProfile();
       this.userToken = await this.keycloak.getToken();
+      this.userService.NewUserCheck().subscribe();
     } else {
       this.route.navigate([`/prelogin`]);
     }

@@ -12,10 +12,12 @@ export class UsersService {
 
   constructor(private http: HttpClient) { }
 
+  NewUserCheck() : Observable<any> {
+    return this.http.post(`${environment.apiUrl}/Users/NewUserCheck`, null);
+  }
+
   getUsers() : Observable<User[]> {
-    var a = this.http.get<User[]>(`${environment.apiUrl}/Users`);
-    a.subscribe(x => console.log(x));
-    return a;
+    return this.http.get<User[]>(`${environment.apiUrl}/Users`);
   }
 
   getUsersByEmail(email: string) : Observable<User[]> {

@@ -21,12 +21,37 @@ namespace iolock_api.Controllers
             _dataAccess = dataAccess;
         }
 
+        [Authorize(Roles = "app-user")]
+        [HttpPost("NewUserCheck")]
+        public async Task InsertIfNewUser()
+        {
+            var user = User.Identity;
+            var username = User.Identity.Name;
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            if (userEmail != null)
+            {
+                var webappUser = await _dataAccess.GetUserByEmailAsync(userEmail);
+                if (webappUser == null)
+                {
+                    var newUser = new Models.User
+                    {
+                        GivenName = User.FindFirstValue(ClaimTypes.GivenName),
+                        FamilyName = User.FindFirstValue(ClaimTypes.Surname),
+                        Email = userEmail,
+                        EmailVerified = Convert.ToBoolean(User.FindFirstValue("email_verified")),
+                        PreferredUsername = username
+                    };
+                    await _dataAccess.InsertUserAsync(newUser);
+                }
+            }
+        }
+
         [Authorize(Roles = "app-admin")]
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var username = User.Identity.Name;
-            var email = User.FindFirstValue(ClaimTypes.Email);
             var result = await _dataAccess.GetUsersAsync();
 
             return result != null ? Ok(result) : BadRequest();

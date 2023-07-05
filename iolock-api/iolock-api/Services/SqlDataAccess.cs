@@ -70,7 +70,7 @@ public class SqlDataAccess : IDataAccess
         return await connection.QueryFirstOrDefaultAsync<User>(query, new { Email });
     }
 
-    public async Task<int> CreateUserAsync(User user)
+    public async Task<int> InsertUserAsync(User user)
     {
         const string query = """
             INSERT INTO Users (givenName, familyName, email, preferredUsername, emailVerified)
