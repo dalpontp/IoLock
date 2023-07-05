@@ -1,4 +1,4 @@
 export const environment = {
-  apiUrl : 'https://localhost:7117/api',
+  apiUrl : 'https://iolock-api.azurewebsites.net/api',
   keycloakUrl:'https://iolock-keycloak.azurewebsites.net/auth/'
 };
