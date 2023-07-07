@@ -5,11 +5,12 @@
     <h1 style="font-size: 22px; margin-left: 10px;">Inserisci il codice visualizzato sul dispositivo</h1>
   </div>
 
-  <form #registerform="ngForm" (ngSubmit)="onSubmit(registerform)">
+  <!-- <form #registerform="ngForm" (ngSubmit)="onSubmit(registerform)" style="display: flex; justify-content: flex-end;"> -->
+  <form #registerform="ngForm" (ngSubmit)="onSubmit(registerform)" style="display: flex; flex-direction: column; align-items: flex-end;">
     <mat-form-field appearance="fill" class="example-full-width">
-      <input matInput type="name" maxlength="5" placeholder="Ex. 94105" name='name' required ngModel>
+      <input matInput type="name" maxlength="5" placeholder="Ex. 94105" name='name' required ngModel style="text-align: center;">
     </mat-form-field>
-    <button mat-raised-button color="primary" type="submit" [disabled]="!registerform.valid">Invia</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!registerform.valid"  >Invia</button>
   </form>
 
 </form>
@@ -17,13 +18,20 @@
 <form class="backend-code-form">
   <div style="display: flex; align-items: center;">
     <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="key" style="margin-bottom: 18px;"></mat-icon>
-    <h1 style="font-size: 22px; margin-left: 10px;">Inserisci il codice sul dispositivo per accedere</h1>
+    <h1 style="font-size: 22px; margin-left: 10px;">Codice per accedere alla stanza</h1>
   </div>
 
-  <mat-card class="example-full-width-card">    <container-element [ngSwitch]="accessPassword">
-      <mat-card-content *ngSwitchCase="-1">Password per accedere</mat-card-content>
-      <mat-card-content *ngSwitchCase="0">Non sei autorizzato ad accedere</mat-card-content>
-      <mat-card-content *ngSwitchDefault>{{accessPassword}}</mat-card-content>
+  <mat-card class="example-card">
+    <container-element [ngSwitch]="accessPassword">
+      <mat-card-content *ngSwitchCase="0">
+        <p>Password per accedere</p>
+      </mat-card-content>
+      <mat-card-content *ngSwitchCase="-1" style="background-color: rgba(255, 0, 0, 0.15);">
+        <p>Non sei autorizzato ad accedere</p>
+      </mat-card-content>
+      <mat-card-content *ngSwitchDefault style="background-color: rgba(0, 128, 0, 0.15);">
+        <p>{{accessPassword}}</p>
+      </mat-card-content>
     </container-element>
   </mat-card>
 

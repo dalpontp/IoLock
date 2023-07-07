@@ -16,7 +16,7 @@ export class UserCodeComponent implements OnInit {
   public isLogged: boolean = false;
   public userProfile: KeycloakProfile | null = null;
   public userToken: string = '';
-  public accessPassword: number = -1;
+  public accessPassword: number = 0;
 
   constructor(private userService : UsersService, private accessService: AccessService, private readonly keycloak: KeycloakService, private route: Router) { }
 
@@ -42,9 +42,16 @@ export class UserCodeComponent implements OnInit {
       code: form.value.name,
       email: this.userProfile!.email!
     }
-    this.accessService.getAccessPassword(accessRequest).subscribe((response: any) => {
-      this.accessPassword = response == null ? 0 : response;
 
+    // this.buildingsService.getBuildings().subscribe({
+    //   next: buildings => {
+    //     this.buildingsList = buildings;
+    //   }
+    // })
+
+    this.accessService.getAccessPassword(accessRequest).subscribe((response: any) => {
+      console.log(response)
+      this.accessPassword = response == null ? 0 : response;
     });
   }
 }

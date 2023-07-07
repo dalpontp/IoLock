@@ -52,30 +52,32 @@ namespace iolock_api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(AccessRequest accessRequest)
         {
-            var user = User.Identity;
-            var username = User.Identity.Name;
+            //var user = User.Identity;
+            //var username = User.Identity.Name;
 
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            //var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-            if (userEmail != null) {
-                var webappUser = await _dataAccess.GetUserByEmailAsync(userEmail);
-                if (webappUser == null)
-                {
-                    var newUser = new Models.User
-                    {
-                        GivenName = User.FindFirstValue(ClaimTypes.GivenName),
-                        FamilyName = User.FindFirstValue(ClaimTypes.Surname),
-                        Email = userEmail,
-                        EmailVerified = Convert.ToBoolean(User.FindFirstValue("email_verified")),
-                        PreferredUsername = username
-                    };
-                    await _dataAccess.InsertUserAsync(newUser);
-                }
-            }
+            //if (userEmail != null) {
+            //    var webappUser = await _dataAccess.GetUserByEmailAsync(userEmail);
+            //    if (webappUser == null)
+            //    {
+            //        var newUser = new Models.User
+            //        {
+            //            GivenName = User.FindFirstValue(ClaimTypes.GivenName),
+            //            FamilyName = User.FindFirstValue(ClaimTypes.Surname),
+            //            Email = userEmail,
+            //            EmailVerified = Convert.ToBoolean(User.FindFirstValue("email_verified")),
+            //            PreferredUsername = username
+            //        };
+            //        await _dataAccess.InsertUserAsync(newUser);
+            //    }
+            //}
+
+            if (accessRequest.Email == null || accessRequest.Code == null) return BadRequest();
 
             var result = await _dataAccess.GetAccessPasswordAsync(accessRequest.Email, accessRequest.Code);
 
-            return result != null ? Ok(result) : BadRequest();
+            return result != null ? Ok(result) : Ok("-1");
         }
     }
 }
