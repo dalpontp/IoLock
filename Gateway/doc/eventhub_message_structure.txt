@@ -1,0 +1,24 @@
+[
+  {
+    body: '"test1"',
+    properties: undefined,
+    offset: '2888',
+    sequenceNumber: 13,
+    enqueuedTimeUtc: 2023-06-30T08:31:53.394Z,
+    partitionKey: undefined,
+    systemProperties: {},
+    getRawAmqpMessage: [Function: getRawAmqpMessage]
+  }
+]
+[
+  {
+    body: '[]',
+    properties: undefined,
+    offset: '2960',
+    sequenceNumber: 14,
+    enqueuedTimeUtc: 2023-06-30T08:53:36.849Z,
+    partitionKey: undefined,
+    systemProperties: {},
+    getRawAmqpMessage: [Function: getRawAmqpMessage]
+  }
+]
