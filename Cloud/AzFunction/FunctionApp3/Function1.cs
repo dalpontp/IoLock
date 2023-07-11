@@ -55,10 +55,10 @@ namespace FunctionApp3
             {
                 _logger.LogInformation("Connection to DB...\n");
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-                builder.DataSource = "iolock-server.database.windows.net";
-                builder.UserID = "iolock";
-                builder.Password = "Password1";
-                builder.InitialCatalog = "iolock-db";
+                builder.DataSource = "server";
+                builder.UserID = "user";
+                builder.Password = "psw";
+                builder.InitialCatalog = "database";
 
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
@@ -105,7 +105,7 @@ namespace FunctionApp3
                 payload = psw.ToString(),
             };
             //connect to iothub device
-            ServiceClient serviceClient = ServiceClient.CreateFromConnectionString("HostName=IoLockIotHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=zP3HAfnUit+y3fo++Pu+6Eg81oIourJZQdSG1t9N7sY=");
+            ServiceClient serviceClient = ServiceClient.CreateFromConnectionString("iotdevicecs");
             _logger.LogInformation($"Connected to IoT Hub");
             //create message
             Message message = new Message(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(msgToGateway)));     
