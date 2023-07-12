@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "PIC_IO_LOCK",
+			"path": "."
+		},
+		{
+			"name": "iolock",
+			"path": "../iolock"
+		}
+	],
+	"settings": {}
+}
